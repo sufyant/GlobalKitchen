@@ -1,0 +1,46 @@
+name: Convert Markdown to PDF
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+    branches: [main]
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v2
+
+      - name: Set up Python
+        uses: actions/setup-python@v2
+        with:
+          python-version: "3.x"
+
+      - name: Install dependencies
+        run: |
+          pip install pandoc
+
+      - name: Convert English Markdown to PDF
+        run: |
+          mkdir -p pdf/english
+          for file in English/**/*.md; do
+            [ -e "$file" ] || continue
+            pandoc "$file" -o "pdf/english/${file%.md}.pdf"
+          done
+
+      - name: Convert Turkish Markdown to PDF
+        run: |
+          mkdir -p pdf/turkce
+          for file in Turkce/**/*.md; do
+            [ -e "$file" ] || continue
+            pandoc "$file" -o "pdf/turkce/${file%.md}.pdf"
+          done
+
+      - name: Upload PDF files
+        uses: actions/upload-artifact@v2
+        with:
+          name: pdf-files
+          path: pdf/
