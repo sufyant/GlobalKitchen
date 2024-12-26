@@ -47,8 +47,12 @@ jobs:
           ls -l pdf/english
           ls -l pdf/turkish
 
-      - name: Upload PDF files
-        uses: actions/upload-artifact@v3
-        with:
-          name: pdf-files
-          path: pdf/
+      - name: Commit and push generated PDFs
+        run: |
+          git config --global user.email "sufyantaskin@gmail.com"
+          git config --global user.name "Sufyan Taskin"
+          git add pdf/
+          git commit -m "Add generated PDF files"
+          git push
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
