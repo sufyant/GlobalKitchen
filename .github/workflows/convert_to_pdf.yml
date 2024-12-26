@@ -27,23 +27,25 @@ jobs:
       - name: Convert English Markdown to PDF
         run: |
           mkdir -p pdf/english
-          for file in English/**/*.md; do
+          for file in Recipes/English/**/*.md; do
             [ -e "$file" ] || continue
             pandoc "$file" -o "pdf/english/$(basename "${file%.md}.pdf")"
           done
 
       - name: Convert Turkish Markdown to PDF
         run: |
-          mkdir -p pdf/turkce
-          for file in Turkce/**/*.md; do
+          mkdir -p pdf/turkish
+          for file in Recipes/Turkish/**/*.md; do
             [ -e "$file" ] || continue
-            pandoc "$file" -o "pdf/turkce/$(basename "${file%.md}.pdf")"
+            pandoc "$file" -o "pdf/turkish/$(basename "${file%.md}.pdf")"
           done
 
       - name: List generated PDF files
         run: |
           echo "Generated PDF files:"
           find pdf -type f -name "*.pdf"
+          ls -l pdf/english
+          ls -l pdf/turkish
 
       - name: Upload PDF files
         uses: actions/upload-artifact@v3
