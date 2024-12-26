@@ -21,14 +21,15 @@ jobs:
 
       - name: Install dependencies
         run: |
-          pip install pandoc
+          sudo apt-get update
+          sudo apt-get install -y pandoc texlive-xetex
 
       - name: Convert English Markdown to PDF
         run: |
           mkdir -p pdf/english
           for file in English/**/*.md; do
             [ -e "$file" ] || continue
-            pandoc "$file" -o "pdf/english/${file%.md}.pdf"
+            pandoc "$file" -o "pdf/english/$(basename "${file%.md}.pdf")"
           done
 
       - name: Convert Turkish Markdown to PDF
@@ -36,8 +37,13 @@ jobs:
           mkdir -p pdf/turkce
           for file in Turkce/**/*.md; do
             [ -e "$file" ] || continue
-            pandoc "$file" -o "pdf/turkce/${file%.md}.pdf"
+            pandoc "$file" -o "pdf/turkce/$(basename "${file%.md}.pdf")"
           done
+
+      - name: List generated PDF files
+        run: |
+          echo "Generated PDF files:"
+          find pdf -type f -name "*.pdf"
 
       - name: Upload PDF files
         uses: actions/upload-artifact@v3
